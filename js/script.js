@@ -107,6 +107,7 @@
       removeTd: function removeTd(){
         var dataJS = '[data-js="id"]'.replace('id',this.id);
         var $car = $(dataJS).get();
+        $car.remove();
         console.log($car);
       }
     }
