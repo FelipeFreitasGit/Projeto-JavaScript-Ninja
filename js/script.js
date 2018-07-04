@@ -23,6 +23,7 @@
         var $tableCar = $('[data-js="table-car"]').get();
         $tableCar.appendChild(app.createNewCar());
         app.clearForm();
+        app.getRemoveTd();
       },
 
       createNewCar: function createNewCar(){
@@ -49,7 +50,6 @@
         $btnRemover.setAttribute('class', 'btn-remover');
         $tdRemover.appendChild($btnRemover);
 
-
         $tdBrand.textContent = brand.value;
         $tdYear.textContent = year.value;
         $tdPlate.textContent = plate.value;
@@ -73,6 +73,20 @@
         color.value = ''
       },
 
+      generateID: function generateID(){
+        return Math.floor(Date.now() * (Math.random() * 10));;
+      },
+
+      getRemoveTd: function getRemoveTd(){
+        $('[data-js="remove"]').on('click', this.removeTd);
+      },
+
+      removeTd: function removeTd(){
+        var dataJS = '[data-js="id"]'.replace('id',this.id);
+        var $car = $(dataJS).get();
+        $car.remove();
+      },
+
       companyInfo: function companyInfo(){
         var ajax = new XMLHttpRequest();
         ajax.open('GET', 'data/company.json', true);
@@ -93,22 +107,6 @@
 
       isRequestOK: function isRequestOK(){
         return this.readyState === 4 && this.status === 200;
-      },
-
-      generateID: function generateID(){
-        return Math.floor(Date.now() * (Math.random() * 10));;
-      },
-
-      getRemoveTd: function getRemoveTd(){
-        $('[data-js="remove"]').on('click', this.removeTd);
-        console.log("ouvindo click");
-      },
-
-      removeTd: function removeTd(){
-        var dataJS = '[data-js="id"]'.replace('id',this.id);
-        var $car = $(dataJS).get();
-        $car.remove();
-        console.log($car);
       }
     }
 
