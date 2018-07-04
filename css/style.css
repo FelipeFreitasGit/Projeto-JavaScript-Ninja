@@ -4,12 +4,12 @@ h2{
 }
 
 form{
+  float:left;
   margin: 20px;
 }
+
 table{
-  margin: 20px;
-}
-.rm {
+  float: right;
   margin: 20px;
 }
 td,
@@ -31,6 +31,17 @@ button{
   width: 100px;
 }
 
+.btn-remover{
+  background-color: red;
+  border: none;
+  color: white;
+  vertical-align: middle;
+}
+
 input{
-  width: 20%;
+  width: 200%;
+}
+
+.error{
+  color: red;
 }

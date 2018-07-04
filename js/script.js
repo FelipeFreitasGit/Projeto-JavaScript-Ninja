@@ -1,6 +1,6 @@
 (function($, doc) {
   'use strict';
-  function app(){
+  var app = (function(){
 
     var image =  $('[data-js="image"]').get();
     var brand =  $('[data-js="brand"]').get();
@@ -12,7 +12,6 @@
       init: function init(){
         this.companyInfo();
         this.initEvents();
-        this.getRemoveTd();
       },
 
       initEvents: function initEvents(){
@@ -22,8 +21,8 @@
       handleRegister: function handleRegister(event){
         event.preventDefault();
         var $tableCar = $('[data-js="table-car"]').get();
-        $tableCar.appendChild(app().createNewCar());
-        app().clearForm();
+        $tableCar.appendChild(app.createNewCar());
+        app.clearForm();
       },
 
       createNewCar: function createNewCar(){
@@ -34,10 +33,22 @@
         var $tdYear = doc.createElement('td');
         var $tdPlate = doc.createElement('td');
         var $tdColor = doc.createElement('td');
+        var $tdRemover = doc.createElement('td');
+        var $btnRemover = doc.createElement('button');
         var $img = doc.createElement('img');
 
         $img.src = image.value;
         $tdImage.appendChild($img);
+
+        var id = 'carNumber-' + this.generateID();
+        $tr.setAttribute('data-js', id);
+
+        $btnRemover.textContent = 'Remover';
+        $btnRemover.setAttribute('id', id);
+        $btnRemover.setAttribute('data-js', 'remove');
+        $btnRemover.setAttribute('class', 'btn-remover');
+        $tdRemover.appendChild($btnRemover);
+
 
         $tdBrand.textContent = brand.value;
         $tdYear.textContent = year.value;
@@ -49,6 +60,7 @@
         $tr.appendChild($tdYear);
         $tr.appendChild($tdPlate);
         $tr.appendChild($tdColor);
+        $tr.appendChild($tdRemover);
 
         return $fragament.appendChild($tr);
       },
@@ -69,7 +81,7 @@
       },
 
       getCompanyInfo: function getCompanyInfo(){
-        if(!app().isRequestOK.call(this))
+        if(!app.isRequestOK.call(this))
           return;
 
         var data = JSON.parse(this.responseText);
@@ -83,20 +95,24 @@
         return this.readyState === 4 && this.status === 200;
       },
 
-      getRemoveTd: function getRemoveTd(){
-        $('[data-js="remove"]').on('click', this.removeTd);
+      generateID: function generateID(){
+        return Math.floor(Date.now() * (Math.random() * 10));;
       },
 
-      removeTd: function removeTd(event){
-        event.preventDefault();
-        var $tabCarro = $('[data-js="table-car"]');
-        var $trCar = $tabCarro.lastElementChild;
-        $trCar.innerHTML = '';
+      getRemoveTd: function getRemoveTd(){
+        $('[data-js="remove"]').on('click', this.removeTd);
+        console.log("ouvindo click");
+      },
+
+      removeTd: function removeTd(){
+        var dataJS = '[data-js="id"]'.replace('id',this.id);
+        var $car = $(dataJS).get();
+        console.log($car);
       }
     }
 
-  }
+  })();
 
-  app().init();
+  app.init();
 
 })(window.DOM, document);
