@@ -100,7 +100,7 @@
 
         var data = JSON.parse(this.responseText);
         var $companyName =  $('[data-js="company-name"]').get();
-        var $companyPhone =  $('[data-js="company-phone"]').get();
+        var $companyPhone =  $('[data-js="company-phone"]'). get();
         $companyName.textContent = data.name;
         $companyPhone.textContent = data.phone;
       },
