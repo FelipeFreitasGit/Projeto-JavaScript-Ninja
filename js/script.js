@@ -20,6 +20,27 @@
 
       handleRegister: function handleRegister(event){
         event.preventDefault();
+
+        var imagem = image.value;
+        var marca = brand.value;
+        var ano = year.value;
+        var cor = color.value;
+        var placa = plate.value;
+
+        var ajaxPost = new XMLHttpRequest();
+        ajaxPost.open('POST', 'http://localhost:3000/car');
+        ajaxPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        /*ARRUMAR ESSE CODIGO DE BAIXO, SÓ ESTA ENVIANDO A STRING*/
+        ajaxPost.send('image=imagem&brandModel=marca&year=ano&plate=placa&color=cor');
+
+
+        console.log('Cadastrando usuário...');
+
+        ajaxPost.onreadystatechange = function(){
+          if(ajaxPost.readyState === 4 && ajaxPost.status === 200)
+            console.log('Usuário cadastrado', ajaxPost.responseText);
+        }
+
         var $tableCar = $('[data-js="table-car"]').get();
         $tableCar.appendChild(app.createNewCar());
         app.clearForm();
@@ -27,6 +48,7 @@
       },
 
       createNewCar: function createNewCar(){
+
         var $fragament = doc.createDocumentFragment();
         var $tr = doc.createElement('tr');
         var $tdImage = doc.createElement('td');
@@ -42,12 +64,14 @@
         $tdImage.appendChild($img);
 
         var id = 'carNumber-' + this.generateID();
-        $tr.setAttribute('data-js', id);
 
         $btnRemover.textContent = 'Remover';
+
+        $tr.setAttribute('data-js', id);
         $btnRemover.setAttribute('id', id);
         $btnRemover.setAttribute('data-js', 'remove');
         $btnRemover.setAttribute('class', 'btn-remover');
+
         $tdRemover.appendChild($btnRemover);
 
         $tdBrand.textContent = brand.value;
@@ -107,7 +131,8 @@
 
       isRequestOK: function isRequestOK(){
         return this.readyState === 4 && this.status === 200;
-      }
+      },
+
     }
 
   })();
