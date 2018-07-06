@@ -30,15 +30,20 @@
         var ajaxPost = new XMLHttpRequest();
         ajaxPost.open('POST', 'http://localhost:3000/car');
         ajaxPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        /*ARRUMAR ESSE CODIGO DE BAIXO, SÓ ESTA ENVIANDO A STRING*/
-        ajaxPost.send('image=imagem&brandModel=marca&year=ano&plate=placa&color=cor');
-
+        /*image=imagem&brandModel=marca&year=ano&plate=placa&color=cor*/
+        ajaxPost.send({ image: imagem,
+                        brandModel:marca,
+                        year: ano,
+                        plate: placa,
+                        color: cor
+                      });
 
         console.log('Cadastrando usuário...');
 
         ajaxPost.onreadystatechange = function(){
           if(ajaxPost.readyState === 4 && ajaxPost.status === 200)
-            console.log('Usuário cadastrado', ajaxPost.responseText);
+            return console.log('Usuário cadastrado', ajaxPost.responseText);
+          return console.log(ajaxPost.status);
         }
 
         var $tableCar = $('[data-js="table-car"]').get();
@@ -48,6 +53,8 @@
       },
 
       createNewCar: function createNewCar(){
+
+
 
         var $fragament = doc.createDocumentFragment();
         var $tr = doc.createElement('tr');
