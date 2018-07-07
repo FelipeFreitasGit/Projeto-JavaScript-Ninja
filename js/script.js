@@ -7,6 +7,7 @@
     var year =  $('[data-js="year"]').get();
     var color =  $('[data-js="color"]').get();
     var plate =  $('[data-js="plate"]').get();
+    var ajax = new XMLHttpRequest();
 
     return{
       init: function init(){
@@ -21,40 +22,46 @@
       handleRegister: function handleRegister(event){
         event.preventDefault();
 
-        var imagem = image.value;
-        var marca = brand.value;
-        var ano = year.value;
-        var cor = color.value;
-        var placa = plate.value;
+        ajax.open('POST', 'http://localhost:3000/car');
+        ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
-        var ajaxPost = new XMLHttpRequest();
-        ajaxPost.open('POST', 'http://localhost:3000/car');
-        ajaxPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        /*image=imagem&brandModel=marca&year=ano&plate=placa&color=cor*/
-        ajaxPost.send({ image: imagem,
-                        brandModel:marca,
-                        year: ano,
-                        plate: placa,
-                        color: cor
-                      });
+        ajax.send('image=' + image.value
+                  + '&brandModel=' + brand.value
+                  + '&year=' + year.value
+                  + '&plate=' + plate.value
+                  + '&color=' + color.value);
 
         console.log('Cadastrando usuário...');
 
-        ajaxPost.onreadystatechange = function(){
-          if(ajaxPost.readyState === 4 && ajaxPost.status === 200)
-            return console.log('Usuário cadastrado', ajaxPost.responseText);
-          return console.log(ajaxPost.status);
+        ajax.onreadystatechange = function(){
+          if(ajax.readyState === 4 && ajax.status === 200)
+            return console.log('Usuário cadastrado', ajax.responseText);
+          return console.log(ajax.status);
         }
 
-        var $tableCar = $('[data-js="table-car"]').get();
-        $tableCar.appendChild(app.createNewCar());
         app.clearForm();
-        app.getRemoveTd();
+        app.searchCar();
       },
 
-      createNewCar: function createNewCar(){
+      searchCar: function searchCar(){
 
+        ajax.open('GET', 'http://localhost:3000/car');
+        ajax.send();
 
+        ajax.onreadystatechange = function(){
+          if(ajax.readyState === 4 && ajax.status === 200){
+            var carros = JSON.parse(ajax.responseText);
+            console.log('carros', carros);
+            carros.forEach(function(car){
+              var $tableCar = $('[data-js="table-car"]').get();
+              $tableCar.appendChild(app.createNewCar(car.image, car.brandModel, car.year, car.plate, car.color));
+              app.getRemoveTd();
+            });
+          }
+        }
+      },
+
+      createNewCar: function createNewCar(image, plate, year, color, brand){
 
         var $fragament = doc.createDocumentFragment();
         var $tr = doc.createElement('tr');
@@ -67,10 +74,10 @@
         var $btnRemover = doc.createElement('button');
         var $img = doc.createElement('img');
 
-        $img.src = image.value;
+        $img.src = image;
         $tdImage.appendChild($img);
 
-        var id = 'carNumber-' + this.generateID();
+        var id = 'carNumber-' + app.generateID();
 
         $btnRemover.textContent = 'Remover';
 
@@ -81,10 +88,10 @@
 
         $tdRemover.appendChild($btnRemover);
 
-        $tdBrand.textContent = brand.value;
-        $tdYear.textContent = year.value;
-        $tdPlate.textContent = plate.value;
-        $tdColor.textContent = color.value;
+        $tdBrand.textContent = brand;
+        $tdYear.textContent = year;
+        $tdPlate.textContent = plate;
+        $tdColor.textContent = color;
 
         $tr.appendChild($tdImage);
         $tr.appendChild($tdBrand);
@@ -119,7 +126,6 @@
       },
 
       companyInfo: function companyInfo(){
-        var ajax = new XMLHttpRequest();
         ajax.open('GET', 'data/company.json', true);
         ajax.send();
         ajax.addEventListener('readystatechange', this.getCompanyInfo, false);
