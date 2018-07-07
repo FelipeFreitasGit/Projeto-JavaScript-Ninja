@@ -7,10 +7,10 @@
     var year =  $('[data-js="year"]').get();
     var color =  $('[data-js="color"]').get();
     var plate =  $('[data-js="plate"]').get();
-    var ajax = new XMLHttpRequest();
 
     return{
       init: function init(){
+        this.searchCar();
         this.companyInfo();
         this.initEvents();
       },
@@ -22,37 +22,43 @@
       handleRegister: function handleRegister(event){
         event.preventDefault();
 
-        ajax.open('POST', 'http://localhost:3000/car');
-        ajax.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-        ajax.send('image=' + image.value
-                  + '&brandModel=' + brand.value
-                  + '&year=' + year.value
-                  + '&plate=' + plate.value
-                  + '&color=' + color.value);
-
-        console.log('Cadastrando usuário...');
-
-        ajax.onreadystatechange = function(){
-          if(ajax.readyState === 4 && ajax.status === 200)
-            return console.log('Usuário cadastrado', ajax.responseText);
-          return console.log(ajax.status);
-        }
-
+        app.insertNewCar();
         app.clearForm();
         app.searchCar();
       },
 
+      insertNewCar: function insertNewCar(){
+
+        var ajaxPost = new XMLHttpRequest();
+        ajaxPost.open('POST', 'http://localhost:3000/car');
+        ajaxPost.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        ajaxPost.send('image=' + image.value
+                  + '&brandModel=' + brand.value
+                  + '&year=' + year.value
+                  + '&plate=' + plate.valueGet
+                  + '&color=' + color.value);
+
+        console.log('Cadastrando usuário...');
+
+        ajaxPost.onreadystatechange = function(){
+          if(ajaxPost.readyState === 4 && ajaxPost.status === 200)
+            return console.log('Usuário cadastrado', ajaxPost.responseText);
+          return console.log(ajaxPost.status);
+        }
+      },
+
       searchCar: function searchCar(){
 
-        ajax.open('GET', 'http://localhost:3000/car');
-        ajax.send();
+        var ajaxGet = new XMLHttpRequest();
+        ajaxGet.open('GET', 'http://localhost:3000/car');
+        ajaxGet.send();
 
-        ajax.onreadystatechange = function(){
-          if(ajax.readyState === 4 && ajax.status === 200){
-            var carros = JSON.parse(ajax.responseText);
+        ajaxGet.onreadystatechange = function(){
+          if(ajaxGet.readyState === 4 && ajaxGet.status === 200){
+            var carros = JSON.parse(ajaxGet.responseText);
             console.log('carros', carros);
-            carros.forEach(function(car){
+            Array.prototype.forEach.call(carros, function(car){
               var $tableCar = $('[data-js="table-car"]').get();
               $tableCar.appendChild(app.createNewCar(car.image, car.brandModel, car.year, car.plate, car.color));
               app.getRemoveTd();
@@ -126,6 +132,8 @@
       },
 
       companyInfo: function companyInfo(){
+
+        var ajax = new XMLHttpRequest();
         ajax.open('GET', 'data/company.json', true);
         ajax.send();
         ajax.addEventListener('readystatechange', this.getCompanyInfo, false);
