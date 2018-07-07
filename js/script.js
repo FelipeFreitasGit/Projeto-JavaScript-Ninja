@@ -36,7 +36,7 @@
         ajaxPost.send('image=' + image.value
                   + '&brandModel=' + brand.value
                   + '&year=' + year.value
-                  + '&plate=' + plate.valueGet
+                  + '&plate=' + plate.value
                   + '&color=' + color.value);
 
         console.log('Cadastrando usuário...');
@@ -67,7 +67,7 @@
         }
       },
 
-      createNewCar: function createNewCar(image, plate, year, color, brand){
+      createNewCar: function createNewCar(image, brand, year, plate, color ){
 
         var $fragament = doc.createDocumentFragment();
         var $tr = doc.createElement('tr');
