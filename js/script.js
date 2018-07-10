@@ -39,11 +39,11 @@
                   + '&plate=' + plate.value
                   + '&color=' + color.value);
 
-        console.log('Cadastrando usuário...');
+        console.log('Cadastrando Carro...');
 
         ajaxPost.onreadystatechange = function(){
           if(ajaxPost.readyState === 4 && ajaxPost.status === 200)
-            return console.log('Usuário cadastrado', ajaxPost.responseText);
+            return console.log('Carro cadastrado', ajaxPost.responseText);
           return console.log(ajaxPost.status);
         }
       },
@@ -126,6 +126,21 @@
       },
 
       removeTd: function removeTd(){
+
+        var ajaxDelete = new XMLHttpRequest();
+        ajaxDelete.open('DELETE', 'http://localhost:3000/car');
+        ajaxDelete.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        ajaxDelete.send('plate=' + plate.value);
+
+        console.log('Deletando carro...');
+
+        ajaxDelete.onreadystatechange = function(){
+          if(ajaxDelete.readyState === 4 && ajaxDelete.status === 200)
+            return console.log('Carro deletado', ajaxDelete.responseText);
+          return console.log(ajaxDelete.status);
+        }
+
         var dataJS = '[data-js="id"]'.replace('id',this.id);
         var $car = $(dataJS).get();
         $car.remove();
